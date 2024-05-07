@@ -48,8 +48,8 @@ func (d deck) toString() string {
 }
 
 // 保存deck为字符串并以文本的形式保存到本地
-func (d deck) saveToFile() error {
-	return os.WriteFile("myDeck", []byte(d.toString()), 0666)
+func (d deck) saveToFile(filename string) error {
+	return os.WriteFile(filename, []byte(d.toString()), 0666)
 }
 
 func newDeckFromFile(filename string) deck {
