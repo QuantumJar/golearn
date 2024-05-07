@@ -10,8 +10,10 @@ func main() {
 	// remaningDeck.print()
 	// d.saveToFile()
 	myDeck := newDeckFromFile("myDeck")
+	// myDeck.print()
 
 	myDeck.shuffle()
+
 	myDeck.print()
 
 }

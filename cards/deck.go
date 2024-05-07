@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"os"
 	"strings"
+	"time"
 )
 
 // 声明了一个新的类型deck，他的属性和[]string (string类型的切片)一致，但是他们属于不同的类型
@@ -68,10 +69,15 @@ func newDeckFromFile(filename string) deck {
 	return deck(stringList)
 }
 
+// 洗牌
 func (d deck) shuffle() {
+
+	source := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(source)
+
 	for i := range d {
-		randNumber := rand.Intn(len(d) - 1)
-		d.swap(i, randNumber)
+		randNumber := r.Intn(len(d) - 1)
+		d[i], d[randNumber] = d[randNumber], d[i]
 	}
 }
 func (d deck) swap(i, j int) {
