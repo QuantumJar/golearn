@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"strings"
 )
@@ -48,4 +49,33 @@ func (d deck) toString() string {
 // 保存deck为字符串并以文本的形式保存到本地
 func (d deck) saveToFile() error {
 	return os.WriteFile("myDeck", []byte(d.toString()), 0666)
+}
+
+func newDeckFromFile(filename string) deck {
+
+	bytes, err := os.ReadFile(filename)
+	//这里如果没错误， err== nil
+	if err != nil {
+		fmt.Println("ERROR:", err)
+		os.Exit(1)
+	}
+
+	//[]byte 转 []string
+	s := string(bytes)
+
+	var stringList []string = strings.Split(s, ",")
+
+	return deck(stringList)
+}
+
+func (d deck) shuffle() {
+	for i := range d {
+		randNumber := rand.Intn(len(d) - 1)
+		d.swap(i, randNumber)
+	}
+}
+func (d deck) swap(i, j int) {
+	temp := d[i]
+	d[i] = d[j]
+	d[j] = temp
 }

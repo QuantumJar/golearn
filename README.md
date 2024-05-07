@@ -104,3 +104,79 @@ func (d deck) print() {
 
 ```
 
+
+
+## 基本文件操作
+
+```go
+// WriteFile writes data to the named file, creating it if necessary.
+// If the file does not exist, WriteFile creates it with permissions perm (before umask);
+// otherwise WriteFile truncates it before writing, without changing permissions.
+// Since WriteFile requires multiple system calls to complete, a failure mid-operation
+// can leave the file in a partially written state.
+func WriteFile(name string, data []byte, perm FileMode) error {
+	f, err := OpenFile(name, O_WRONLY|O_CREATE|O_TRUNC, perm)
+	if err != nil {
+		return err
+	}
+	_, err = f.Write(data)
+	if err1 := f.Close(); err1 != nil && err == nil {
+		err = err1
+	}
+	return err
+}
+```
+
+## 从文件创建一个deck
+
+
+
+```go
+func newDeckFromFile(filename string) deck {
+
+	bytes, err := os.ReadFile(filename)
+	//这里如果没错误， err== nil
+	if err != nil {
+		fmt.Println("ERROR:", err)
+		os.Exit(1)
+	}
+
+	//[]byte 转 []string
+	s := string(bytes)
+
+	var stringList []string = strings.Split(s, ",")
+
+	return deck(stringList)
+}
+
+
+```
+
+## go的交换的写法
+
+```go
+//我写的方法
+func (d deck) shuffle() {
+	for i := range d {
+		randNumber := rand.Intn(len(d) - 1)
+		d.swap(i, randNumber)
+	}
+}
+func (d deck) swap(i, j int) {
+	temp := d[i]
+	d[i] = d[j]
+	d[j] = temp
+}
+```
+
+```go
+///视频的写法
+func (d deck) shuffle() {
+	for i := range d {
+		randNumber := rand.Intn(len(d) - 1)
+        //这里不同
+		d[i],d[randNumber] = d[randNumber],d[i]
+	}
+}
+```
+
