@@ -1,4 +1,11 @@
 # Go Learn
+
+## vscode使用快捷键
+
+- 打开终端 ctrl+shift+`
+- 切换打开的标签 crtl+tab
+- 关闭当前标签crtl+w
+
 ## go 命令行指令
 - go build 用于编译一个或者多个.go文件
 - go run 用于编译并运行一个或者多个.go文件

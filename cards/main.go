@@ -4,5 +4,9 @@ func main() {
 
 	d := newDeck()
 
-	d.print()
+	// hand, remaningDeck := deal(d, 3)
+
+	// hand.print()
+	// remaningDeck.print()
+	d.saveToFile()
 }
