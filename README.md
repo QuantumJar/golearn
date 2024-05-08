@@ -214,3 +214,40 @@ func TestNewDeck(t *testing.T) {
 
 ```
 
+## 传值和传指针
+
+- &variable :表示取得这个变量所在的地址
+- *pointer :给我这个地址所指向的东西
+- *Type: 表示一个指向某种类型的指针
+
+在 Go 语言中，结构体的指针可以通过`.`操作符来修改字段的值。这是因为在 Go 语言中，当你使用结构体指针访问字段时，编译器会自动解引用指针并访问字段。这使得修改结构体字段的值变得非常方便。
+
+```go
+package main
+
+import "fmt"
+
+type Person struct {
+	firstname   string
+	lastname    string
+	contactInfo ContactInfo
+}
+
+type ContactInfo struct {
+	email   string
+	address string
+}
+
+func (p Person) Print() {
+	fmt.Printf("%+v", p)
+}
+
+//1.这里接受者参数的*Person 表示这里需要的是一个Person类型的指针
+func (personPtr *Person) setFirstname(firstname string) {
+	// (*personPtr).firstname = firstname 这种写法和下面的写法有什么不一样呢？
+	
+	personPtr.firstname = firstname
+}
+
+```
+
