@@ -251,3 +251,40 @@ func (personPtr *Person) setFirstname(firstname string) {
 
 ```
 
+## 指针陷阱（go传参的注意点）
+
+基础类型传入的是值，引用类型传入的是指针
+
+![1715182149124](C:\Users\69049\AppData\Roaming\Typora\typora-user-images\1715182149124.png)
+
+## map in go
+
+声明一个map，删除一个key
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	//声明map
+	//1.
+	map1 := make(map[string]int)
+	map1["name"] = 1
+	fmt.Println(map1)
+	delete(map1, "name")
+	fmt.Println(map1)
+	//2.
+	map2 := map[string]int{"name": 1}
+	fmt.Println(map2)
+}
+
+//遍历map
+func printMap(m map[string]int) {
+	for k, v := range m {
+		fmt.Println(k, v)
+	}
+}
+
+```
+
