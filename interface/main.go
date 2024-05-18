@@ -31,4 +31,5 @@ func main() {
 
 	printGreeting(eb)
 	printGreeting(cb)
+
 }
