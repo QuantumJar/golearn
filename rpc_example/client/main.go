@@ -24,14 +24,14 @@ func main() {
 		log.Fatal("Connection error:", err)
 	}
 
-	// a := Item{"first", "a test item"}
-	// b := Item{"second", "a second item"}
-	// c := Item{"third", "a third item"}
+	a := Item{"first", "a test item"}
+	b := Item{"second", "a second item"}
+	c := Item{"third", "a third item"}
 
-	// client.Call("API.AddItem", a, &reply)
-	// client.Call("API.AddItem", b, &reply)
-	// client.Call("API.AddItem", c, &reply)
-	client.Call("API.DeleteItem", Item{"first", "a test item"}, &reply)
+	client.Call("API.AddItem", a, &reply)
+	client.Call("API.AddItem", b, &reply)
+	client.Call("API.AddItem", c, &reply)
+	//client.Call("API.DeleteItem", Item{"first", "a test item"}, &reply)
 
 	client.Call("API.GetDB", "", &db)
 

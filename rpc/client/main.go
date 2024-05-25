@@ -35,5 +35,4 @@ func main() {
 	client.Call("Person.GetAllEmployees", arg, &response)
 
 	fmt.Printf("response %v", response.Code)
-
 }
