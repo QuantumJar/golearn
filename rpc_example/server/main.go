@@ -105,6 +105,7 @@ func (a *API) DeleteItem(item Item, reply *Item) error {
 			break
 		}
 	}
+	//reply 是一个指针，*reply 表示获取这个指针指向的值
 	*reply = del
 	return nil
 }
