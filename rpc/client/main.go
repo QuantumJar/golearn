@@ -1,4 +1,4 @@
-package  main
+package main
 
 import (
 	"net"
@@ -7,15 +7,14 @@ import (
 )
 
 type MathService struct {
-
 }
 
-func (m *MathService)Multiply(args [2]int,reply *int)  error{
+func (m *MathService) Multiply(args [2]int, reply *int) error {
 
-	*reply = args[0]*args[1]
-	return  nil
+	*reply = args[0] * args[1]
+	return nil
 }
-func main(){
+func main() {
 
 	var mathService = new(MathService)
 
@@ -25,7 +24,6 @@ func main(){
 
 	listener, _ := net.Listen("tcp", ":1234")
 
-
-	http.Serve(listener,nil)
+	http.Serve(listener, nil)
 
 }
