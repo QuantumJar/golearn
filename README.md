@@ -311,3 +311,84 @@ interface类型表示了对其他类型行为的概括或者抽象。这里的�
 
 ## RPC in go
 
+
+
+## 多线程
+
+### go routine
+
+在引入多线程之前，首先看一个例子
+
+```go
+//这个例子中,控制台打印了两行输出语句，而且他们是顺序的执行。
+func main() {
+	someFunc("somefunc")
+	fmt.Println("print from main routine")
+}
+
+func someFunc(str string) {
+	fmt.Println(str)
+}
+//控制台打印信息：
+//[Running] go run "g:\Code\go_learn\golearn\concurrency\main.go"
+//somefunc
+//print from main routine
+```
+
+
+
+然后在看看另一个例子,这个例子在函数someFunc调用前加入了一个关键字go，go 这个关键字，在go语言中表示开启一个新的线程，这个线程在go中被称为一个go routine。
+
+Q: 结合自己对线程的了解，你觉得控制台应该打印怎么样结果呢？
+
+```go
+//go 这个关键字，在go语言中表示开启一个新的线程，这个线程在go中被称为一个go routine
+func main() {
+	go someFunc("somefunc")
+	fmt.Println("print from main routine")
+}
+
+func someFunc(str string) {
+	fmt.Println(str)
+}
+
+```
+
+我们来看看控制台多次打印的结果
+
+```go
+[Running] go run "g:\Code\go_learn\golearn\concurrency\main.go"
+print from main routine
+somefunc
+
+[Done] exited with code=0 in 0.585 seconds
+
+[Running] go run "g:\Code\go_learn\golearn\concurrency\main.go"
+somefunc
+print from main routine
+
+[Done] exited with code=0 in 0.567 seconds
+
+[Running] go run "g:\Code\go_learn\golearn\concurrency\main.go"
+print from main routine
+somefunc
+
+[Done] exited with code=0 in 0.581 seconds
+
+[Running] go run "g:\Code\go_learn\golearn\concurrency\main.go"
+print from main routine
+
+
+[Done] exited with code=0 in 0.589 seconds
+```
+
+请注意：
+
+- 在第一次结果中，首先打印的是主线程的语句，然后打印了someFunc线程
+- 在第二次首先打印了someFunc,然后是主线程
+- 第三次又和第一次的结果相同
+- 第四次只有主线程的结果，完全没有看到someFunc线程的输出语句。
+
+为什么会出现以上的情况呢？这个答案目前还不能完整的回答
+
+我们再看看第三个例子
