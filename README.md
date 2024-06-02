@@ -458,3 +458,90 @@ write something to the string channel
 
 ### Select 语句
 
+select选择器是用于对监听多个channel上发生的事件的一种工具。下面给定一个例子，我们需要对部署在设备上的温度传感器进行监控，如果温度超过了阈值这个传感器就向自己的channel发送一个消息。在主线程中，我们要捕获这个消息从而做出对应的处理。
+
+```go
+package main
+
+import "fmt"
+
+//定义了一个警告接口
+type Alert interface {
+	Alert() string
+}
+
+//定义了一个CPU结构体模拟传感器
+type CPU struct {
+}
+
+//实现方法
+func (c CPU) Alert() string {
+	return "CPU 温度过高"
+}
+
+//定义了一个风扇结构体模拟传感器
+type Fan struct {
+}
+
+//实现方法
+func (f Fan) Alert() string {
+	return "风扇 温度过高"
+}
+
+func main() {
+
+	fanChannel := make(chan string)
+	CPUChannel := make(chan string)
+
+	fan := Fan{}
+	cpu := CPU{}
+
+	go func() {
+		//CPU发出了温度过高的告警
+		CPUChannel <- cpu.Alert()
+	}()
+
+	go func() {
+		//风扇发出了温度过高的告警
+		fanChannel <- fan.Alert()
+	}()
+
+	select {
+	case fanAlert := <-fanChannel:
+		fmt.Printf("%v,请运维人员进行处理。", fanAlert)
+	case cpuAlert := <-CPUChannel:
+		fmt.Printf("%v,请运维人员进行处理。", cpuAlert)
+	}
+}
+
+//控制台在多次运行后的输出结果如下
+风扇 温度过高,请运维人员进行处理。
+CPU 温度过高,请运维人员进行处理。
+```
+
+以上是一个select语句对多个channel上发生的事件进行监听的演示。本质上这是一个事件驱动的编程模型。当某一个channel中发生了事件的时候，会有相对应的方法去处理它。但是这里有一处并不满足这个事件驱动编程模型的点就是，这个select语句只会执行一次，但是我们的CPU和风扇同时发生了告警。我们应该如何去处理这个缺陷呢？
+
+
+
+## go并发模型
+
+下面介绍一些并发的编程模型，这些编程模型并不是语言层面的，但是在语言层面他们的实现会有难易之分。
+
+### 1. for - select-loop
+
+对于我们讲的第一个select案例，实际上仅仅体现了select选择器的基本使用方式，甚至在实际的代码中，这种只使用一次的方式是错误的，违背事件驱动编程模型的。因为我们使用select选择器时，本应该持续的关注某一些通道上发生的事件。
+
+下面我们对之前的代码进行修改。
+
+```go
+
+```
+
+
+
+### 2. done channel
+
+
+
+### 3. pipeline
+
