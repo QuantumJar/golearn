@@ -389,6 +389,72 @@ print from main routine
 - 第三次又和第一次的结果相同
 - 第四次只有主线程的结果，完全没有看到someFunc线程的输出语句。
 
-为什么会出现以上的情况呢？这个答案目前还不能完整的回答
+我们可以总结出当有多线程在当前线程被启动后，这些被启动的线程的执行顺序不再是顺序的。为什么会出现以上的情况呢？这个答案目前还不能完整的回答
 
-我们再看看第三个例子
+
+
+### Channel
+
+Channel是一种go语言用于线程间通信的工具，对于很多语言来说，线程间的通信是由共享内存来实现的。共享内存实现的通信需要必要的同步手段来实现数据的线程安全。
+
+下面演示一个go使用channel来进行线程见通信的例子
+
+```go
+
+func main() {
+	//创建一个string类型的channel
+	strChannel := make(chan string)
+
+	//声明一个匿名函数并且在另一个线程中运行他
+	go func() {
+		//数据写入channel使用了箭头函数
+		strChannel <- "write something to the string channel"
+	}()
+
+	//在主线程中阻塞的读取strChannel中的数据
+	data := <-strChannel
+
+	fmt.Println(data)
+}
+
+//控制台输出 
+//[Running] go run "g:\Code\go_learn\golearn\concurrency\channel\main.go"
+//write something to the string channel
+```
+
+
+
+以上的程序实现了一个简单的多线程使用channel来通信的例子。这里的channel作为一个主线程和分线程通信的容器，把分线程的数据写入了channel，然后从主线程中获取该数据。可以看到控制台理科打印了输出结果。
+
+这里做一个简单的修改
+
+```go
+func main() {
+	//创建一个string类型的channel
+	strChannel := make(chan string)
+
+	//声明一个匿名函数并且在另一个线程中运行他
+	go func() {
+		//数据写入channel使用了箭头函数
+		strChannel <- "write something to the string channel"
+		fmt.Println("我已经发送了数据，我可以退出了吗")
+	}()
+
+	//在主线程中读取strChannel中的数据，
+	time.Sleep(time.Second * 5)
+	data := <-strChannel
+
+	fmt.Println(data)
+}
+//控制台在5秒后打印了如下信息:
+[Running] go run "g:\Code\go_learn\golearn\concurrency\channel\main.go"
+我已经发送了数据，我可以退出了吗
+write something to the string channel
+
+[Done] exited with code=0 in 5.878 seconds
+```
+
+这是因为channel是阻塞的。当我们在主线程获取这个channel的数据的时候，主线程会一直处于阻塞状态。
+
+### Select 语句
+

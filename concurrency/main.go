@@ -4,6 +4,8 @@ import "fmt"
 
 func main() {
 	go someFunc("somefunc")
+	go someFunc("somefunc")
+	go someFunc("somefunc")
 	fmt.Println("print from main routine")
 }
 
