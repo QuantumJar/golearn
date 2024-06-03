@@ -35,18 +35,28 @@ func main() {
 
 	go func() {
 		//CPU发出了温度过高的告警
-		CPUChannel <- cpu.Alert()
+		for {
+
+			CPUChannel <- cpu.Alert()
+		}
 	}()
 
 	go func() {
 		//风扇发出了温度过高的告警
-		fanChannel <- fan.Alert()
+		for {
+
+			fanChannel <- fan.Alert()
+		}
 	}()
 
-	select {
-	case fanAlert := <-fanChannel:
-		fmt.Printf("%v,请运维人员进行处理。", fanAlert)
-	case cpuAlert := <-CPUChannel:
-		fmt.Printf("%v,请运维人员进行处理。", cpuAlert)
+	for {
+
+		select {
+		case fanAlert := <-fanChannel:
+			fmt.Printf("%v,请运维人员进行处理。", fanAlert)
+		case cpuAlert := <-CPUChannel:
+			fmt.Printf("%v,请运维人员进行处理。", cpuAlert)
+		}
 	}
+
 }

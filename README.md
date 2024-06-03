@@ -337,7 +337,7 @@ func someFunc(str string) {
 
 
 
-然后在看看另一个例子,这个例子在函数someFunc调用前加入了一个关键字go，go 这个关键字，在go语言中表示开启一个新的线程，这个线程在go中被称为一个go routine。
+然后在看看另一个例子,这个例子在函数someFunc调用前加入了一个关键字go，go 这个关键字，在go语言中表示开启一个新的go routine。
 
 Q: 结合自己对线程的了解，你觉得控制台应该打印怎么样结果呢？
 
@@ -534,14 +534,120 @@ CPU 温度过高,请运维人员进行处理。
 下面我们对之前的代码进行修改。
 
 ```go
+package main
 
+import "fmt"
+
+//定义了一个警告接口
+type Alert interface {
+	Alert() string
+}
+
+//定义了一个CPU结构体模拟传感器
+type CPU struct {
+}
+
+//实现方法
+func (c CPU) Alert() string {
+	return "CPU 温度过高"
+}
+
+//定义了一个风扇结构体模拟传感器
+type Fan struct {
+}
+
+//实现方法
+func (f Fan) Alert() string {
+	return "风扇 温度过高"
+}
+
+func main() {
+
+	fanChannel := make(chan string)
+	CPUChannel := make(chan string)
+
+	fan := Fan{}
+	cpu := CPU{}
+
+	go func() {
+		//CPU发出了温度过高的告警，使用了while循环
+		for {
+
+			CPUChannel <- cpu.Alert()
+		}
+	}()
+
+	go func() {
+		//风扇发出了温度过高的告警，使用了while循环
+		for {
+
+			fanChannel <- fan.Alert()
+		}
+	}()
+    
+	for {
+
+		select {
+		case fanAlert := <-fanChannel:
+			fmt.Printf("%v,请运维人员进行处理。", fanAlert)
+		case cpuAlert := <-CPUChannel:
+			fmt.Printf("%v,请运维人员进行处理。", cpuAlert)
+		}
+	}
+
+}
+
+//这里控制台会打印每一个接收到的channel事件，并且不会自动的停止。
 ```
 
 
 
 ### 2. done channel
 
+Done Channel里面的done是一种发送给这个channel的一个信号用来控制（取消）输入channel的处理。一旦从done channel中读取到一个信号或者done channel被管理，输入channel的处理就被取消
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+
+	done := make(chan bool)
+
+	go boring(done)
+
+	//主线程3秒后给done channel 发信号
+	time.Sleep(time.Second * 3)
+
+	done <- false
+
+	time.Sleep(time.Hour * 3)
+
+}
+
+func boring(done <-chan bool) {
+	for {
+		select {
+		case <-done:
+			fmt.Println("收到done信号")
+			return
+		default:
+			fmt.Println("working")
+		}
+	}
+}
+
+```
+
 
 
 ### 3. pipeline
+
+
+
+### 4.generator
 
