@@ -308,8 +308,11 @@ interface类型表示了对其他类型行为的概括或者抽象。这里的�
 
 
 
-
 ## RPC in go
+
+Remote Procedure Call 意思是允许另一台计算机上的代码远程调用其他及其上的方法。
+
+
 
 
 
@@ -654,4 +657,16 @@ func boring(done <-chan bool) {
 
 
 ### 4.generator
+
+一个返回channel的函数
+
+```go
+
+```
+
+### 5. fanin
+
+
+
+### 6. wait channel
 

@@ -1,29 +1,27 @@
 package main
 
 import (
-	"net"
-	"net/http"
+	"fmt"
 	"net/rpc"
 )
 
-type MathService struct {
+type ExampleArg struct {
+	X int
 }
 
-func (m *MathService) Multiply(args [2]int, reply *int) error {
-
-	*reply = args[0] * args[1]
-	return nil
+type ExampleReply struct {
+	Y int
 }
+
 func main() {
 
-	var mathService = new(MathService)
+	args := ExampleArg{}
+	args.X = 10
+	reply := ExampleReply{}
 
-	rpc.Register(mathService)
+	client, _ := rpc.DialHTTP("tcp", "localhost:1234")
 
-	rpc.HandleHTTP()
+	client.Call("MathService.Add", args, &reply)
 
-	listener, _ := net.Listen("tcp", ":1234")
-
-	http.Serve(listener, nil)
-
+	fmt.Printf("结果: %v", reply)
 }

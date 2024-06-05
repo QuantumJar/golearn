@@ -1,18 +1,39 @@
-package  main
+package main
 
 import (
-	"fmt"
+	"log"
+	"net"
+	"net/http"
 	"net/rpc"
 )
 
-func main(){
+type MathService struct {
+}
 
-	client, _ := rpc.DialHTTP("tcp", "localhost:1234")
-	defer  client.Close()
-	 args := []int{2,3}
-	var reply int
-	client.Call("mathService.Multiply",args,&reply)
+type ExampleArg struct {
+	X int
+}
 
-	fmt.Println(reply)
+type ExampleReply struct {
+	Y int
+}
+
+func (m *MathService) Add(args ExampleArg, reply *ExampleReply) error {
+	reply.Y = args.X + args.X
+	return nil
+}
+func main() {
+	var m = new(MathService)
+	rpc.Register(m)
+
+	rpc.HandleHTTP()
+
+	listener, err := net.Listen("tcp", ":1234")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	http.Serve(listener, nil)
 
 }
